@@ -1,9 +1,9 @@
 # Presidential Debate Youtube Comments Clustering 
 
+### Introductions
+At the point when we started this project, election week is coming up. There was so much excitement in the air on who is the next US president to be elected. There were thousands of articles on who's leading the polls. The US election has been trending on most, if not all, social media platforms. Being Data scientists, we wonder if it would be possible to leverage on these different data sources to understand various topics of discussion surrounding each candidate. Of which, we have decided to focus on Youtube comments as a starting point for this project. We were aware of the possibility of biased sampling as the demographic report of users on Youtube reports the highest level of usage from people in the 18-34 age range <sup>[1](https://www.businessofapps.com/data/youtube-statistics/)</sup>. And these users in between these ages are correlated to being more technogically savvy. With that being said, there is still a significant number of people using Youtube from other age groups, and with Youtube being the number one site for web traffic worldwide (8.6 billion monthly visits)<sup>[2](https://www.businessofapps.com/data/youtube-statistics/)</sup>, it's a good representation of the global population and it would be significant to conduct an analysis on the different core ideas, specifically on the US election. 
 
-At the point when we started this project, election week is coming up. There is so much excitement in the air on who is the going to be the next US president. There are thousands of articles on who is leading the polls. Being Data scientist, we wonder if it will be possible to leverage on other data sources like Youtube comments or twitter comments to understand what core ideas are more favourable for each candidate. We are aware of that there may be biased sampling since it is only limited to users of Youtube and twitter and that might be correlated to more technogically savvy users. Still it can be significant enough study to understand core issues that global citizens raise. 
-
-This exploration is useful for many other problems. Essentially it is often difficult to get an overview of all the core ideas amounst hundreds of thousands of comments. This work can extend to other customer service chats or overview of open ended answers from large number of users. 
+This exploration has many use-cases. Essentially it is often difficult to get an overview of all the core ideas amongst the hundreds of thousands of Youtube comments. Youtubers and content creators would not be able to sift through every comment received on their videos. Having an overview or a summary of the different perspectives of their viewers would be useful for them to either create another response video to address their concerns or to reply to each of these "clusters" of ideas. This analysis can also be extended to customer service chats or surveys from large number of users. 
 
 
 
@@ -19,58 +19,20 @@ https://www.youtube.com/watch?v=bPiofmZGb8o
 
 
 
-Creating an summary of the different types of comments. For example, Youtubers who get thousands of comments a day would not be able to sift through all of the comments received on their videos. 
-* These overviews are useful for them to either create another response video to address the concerns or as a next step, where they can reply to each of these "clusters" of ideas. 
-* Understanding the sentiments of the commenters
 
-For the purpose of this article, we would be focusing on creating a summary of the Youtube comments  found in the Presidential Debate between Donald Trump and Joe Biden.
+For the purpose of this article, we would be focusing on creating a summary of the Youtube comments  found in the Presidential Debate between Donald Trump and Joe Biden as shown in the screenshots above.
 
-### Overview of core ideas in the comments.
-Exploratory overview of the comments
-
-
-2 weeks ago<br>
-As a non American, this is highly entertaining
-
-2 weeks ago<br>
-“i take full responsibility”<br> 
-3 seconds later<br>
-“its china’s fault”
-
-6 days ago<br>
-Biden when trump is talking: 😄<br>
-Trump when Biden is talking: 😙
-
-2 weeks ago<br>
-I deleted my Netflix account.<br>
-This is much more entertaining
-
-1 week ago (edited)<br>
-' i am the least racist person in this room '
-
-biden trying not to laugh
-
-1 month ago<br>
-If I wanted to watch 2 elderly people argue I’d just hang out with my parents.
-
-2 weeks ago<br>
-this should be under comedy in NETFLIX
-
-4 days ago<br>
-Obama 2009: Yes we can<br>
-Trump 2016:America first<br>
-Biden2020: Will u shut up man
-
-2 weeks ago<br>
-i cant tell if biden is laughing or crying
-
-9 hours ago<br>
-Trump: who built the cages joe?
-
-Biden: ignores. 
+### Overall Architecture Plan
+- break down the task needed 
+- the major pieces.
+    - youtube api 
+    - CPU/ GPU /Ram
+    - Libraries needed for the task 
+- flows
 
 
 
+### Pulling comments from Youtube 
 #### Enabling the Youtube API
 
 1. Go to the GCP (Google Cloud Platform) [APIs & Services Dashboard](https://console.cloud.google.com/apis/dashboard)
@@ -82,21 +44,77 @@ Biden: ignores.
 1. Go to [https://console.cloud.google.com/apis/credentials](https://console.cloud.google.com/apis/credentials)
 2. Click "+CREATE CREDENTIALS" and choose "API KEY". Click "RESTRICT KEY"
 3. In the "API Restrictions" section, choose the "Restrict Key" option. Click in the "Select APIs" dropdown box, and choose "Youtube Data API v3". Click Save.
-4. Copy the key that you just created and add the following line to `~/.bash_profile` or `~/.bashrc`
 
-```bash=
-export YOUTUBE_API_KEY="AIzaSyC_...p037g"
-```
+![](https://i.imgur.com/kwJjJuQ.png)
+
+Store the Youtube API key in a file, such as `youtube_api_key.txt`
 
 #### Downloading the comments
 
-In order to extract the comments from the Youtube page, the code `get_comments_of_video_id.py` from the Github repo [github.com/XWilliamY/custom_yt_comments_dataset](https://github.com/XWilliamY/custom_yt_comments_dataset) is used as follows:
+In order to extract the comments from the Youtube page, the code `get_comments_of_video_id.py` from the Github repo [github.com/XWilliamY/custom_yt_comments_dataset](https://github.com/XWilliamY/custom_yt_comments_dataset) may be used as follows:
 
 ```bash=
-python get_comments_of_video_id.py --video_id https://www.youtube.com/watch?v=wW1lY5jFNcQ
+python get_comments_of_video_id.py --video_url https://www.youtube.com/watch?v=wW1lY5jFNcQ --apikey youtube_api_key.txt
 ```
 
-- Have different levels of abstraction: Ex:
+The Youtube comments will be stored in a `.csv` file, `{video_id}_csv.csv` which can be read in Python using `df = pd.read_csv('{video_id}_final.csv', header=None)`
+
+### Exploratory Data Analysis and Data cleaning
+Let us start by looking through some of the comments that users are making. Looking through the comments are useful to understand the structure of data we need to deal with; any noise or cleaning required, a sense of the average length of the sentense or amount of data which might give us a sensing of the hardware needed for processing the data. 
+
+> As a non American, this is highly entertaining 
+
+> “i take full responsibility”<br> 
+> 3 seconds later<br>
+> “its china’s fault”
+
+> Biden when trump is talking: 😄<br>
+> Trump when Biden is talking: 😙
+
+> I deleted my Netflix account.<br>
+> This is much more entertaining
+
+> ' i am the least racist person in this room ' <br>
+> biden trying not to laugh
+
+> If I wanted to watch 2 elderly people argue I’d just hang out with my parents.
+
+> this should be under comedy in NETFLIX
+
+> Obama 2009: Yes we can<br>
+> Trump 2016:America first<br>
+> Biden2020: Will u shut up man
+
+> i cant tell if biden is laughing or crying
+
+> Trump: who built the cages joe?<br>
+> Biden: ignores. 
+
+
+
+ermain Cain and Trump does not believe in covid.
+
+
+### Clustering of intents
+
+Text - Processing
+
+- Remove emoji - [https://www.kaggle.com/chameleontk/v2-fine-tuning-bert-with-pre-processed-text](https://www.kaggle.com/chameleontk/v2-fine-tuning-bert-with-pre-processed-text)
+- Pick a embedding:
+    - Bert
+    - Variants of Bert: XLA Roberta
+    - Fasttext
+    - TF hub: universal sentence encoder
+        - [https://tfhub.dev/google/universal-sentence-encoder/4](https://tfhub.dev/google/universal-sentence-encoder/4)
+- Dimension reduction
+    - PCA
+    - UMAP
+    - T-sne
+
+### Results and Conclusion
+
+Next step Plans: 
+Have different levels of abstraction: Ex:
     - Title: Coronavirus Ramps Up in the U.S. and Claims Herman Cain | The Daily Social Distancing Show
     - Comments:
          - Herman Cain survive cancer. Herman Cain didn't survive Trump stupidity. Covid-19: "I attack everyone, especially African Americans, elderly people, and people who don't wear a mask or social distance in public spaces."
@@ -125,28 +143,4 @@ python get_comments_of_video_id.py --video_id https://www.youtube.com/watch?v=wW
 
                     Level 2: 
 
-                    - Hermain Cain and Trump does not believe in covid.
-
-
-
-## Proposed solution:
-## + explanation of model?
-## Clustering
-
-Text - Processing
-
-- Remove emoji - [https://www.kaggle.com/chameleontk/v2-fine-tuning-bert-with-pre-processed-text](https://www.kaggle.com/chameleontk/v2-fine-tuning-bert-with-pre-processed-text)
-- Pick a embedding:
-    - Bert
-    - Variants of Bert: XLA Roberta
-    - Fasttext
-    - TF hub: universal sentence encoder
-        - [https://tfhub.dev/google/universal-sentence-encoder/4](https://tfhub.dev/google/universal-sentence-encoder/4)
-- Dimension reduction
-    - PCA
-    - UMAP
-    - T-sne
-
-## Results
-
-## Conclusion
+                    - H
