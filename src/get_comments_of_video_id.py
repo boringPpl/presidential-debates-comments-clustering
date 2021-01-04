@@ -43,15 +43,16 @@ def get_id(url):
 
 def get_comments(**kwargs):
     """
+    This is the main subroutine to extract the comments
+
     ty: 
     https://python.gotrained.com/youtube-api-extracting-comments/#Cache_Credentials
     https://www.pingshiuanchua.com/blog/post/using-youtube-api-to-analyse-youtube-comments-on-python
     """
 
-    # edit these list declarations as needed
     comments, commentsId, repliesCount, likesCount, updatedAt, viewerRating = [], [], [], [], [], []
 
-    # clean kwargs
+    # Clean kwargs
 
     # parameters needed for query
     kwargs['part'] = kwargs.get('part', 'snippet').split()
@@ -166,4 +167,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
