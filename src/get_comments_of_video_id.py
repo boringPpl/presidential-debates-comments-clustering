@@ -4,9 +4,9 @@
 # https://github.com/XWilliamY/custom_yt_comments_dataset
 
 import argparse
-import json
 import pandas as pd
 import os
+import sys
 
 from apiclient.discovery import build
 from csv import writer
@@ -74,12 +74,17 @@ def get_comments(**kwargs):
 
     # continue until we crash or reach the end
     page = 0
+    print('Downloading comments...')
+    print('Currently processing page: ', end='')
+    sys.stdout.flush()
     while response:
-        print(f'page {page}')
+        if page % 10 == 0:
+            print(f'{page}', end=' ')
+            sys.stdout.flush()
         page += 1
         index = 0
         for item in response['items']:
-            print(f"comment {index}")
+            # print(f"comment {index}")
             index += 1
 
             # query different pieces of data from the JSON response
@@ -115,6 +120,7 @@ def get_comments(**kwargs):
             ).execute()
         else:
             break
+    print()
 
     return {
         'Comments': comments,
