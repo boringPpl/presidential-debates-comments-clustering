@@ -26,26 +26,36 @@ To use the Youtube API, a key must be generated, and saved. The steps to do this
 2. Click "+CREATE CREDENTIALS" and choose "API KEY". Click "RESTRICT KEY"
 3. In the "API Restrictions" section, choose the "Restrict Key" option. Click in the "Select APIs" dropdown box, and choose "Youtube Data API v3". Click Save.
 
-![](https://i.imgur.com/kwJjJuQ.png)
+<img src="https://i.imgur.com/kwJjJuQ.png" height="700"></img>
 
-Store the Youtube API key in a file, such as `youtube_api_key.txt`
+Export your Youtube API key (in your shell environment or place it in your startup script, e.g. in `~/.bash_profile` or `~/.bashrc`) as follows:
+
+```bash
+export YOUTUBE_API_KEY="...your_Youtube_API_key_here..."
+```
 
 #### Downloading the comments
 
-In order to extract the comments from the Youtube page, the code `get_comments_of_video_id.py` from the Github repo [github.com/XWilliamY/custom_yt_comments_dataset](https://github.com/XWilliamY/custom_yt_comments_dataset) may be used as follows:
+In order to extract the comments from the Youtube page, the code `get_comments_of_video_id.py` from the Github repo [github.com/XWilliamY/custom_yt_comments_dataset](https://github.com/XWilliamY/custom_yt_comments_dataset) was adapted slightly and stored in this Git repository [here](https://github.com/boringPpl/presidential_debates_comments_clustering/blob/main/src/get_comments_of_video_id.py).
 
-First install the dependencies:
-
-```bash=
-pip install google-api-python-client
-```
-
-Next, run the Python script as follows:
+To use the Python script, the dependencies must first be installed:
 
 ```bash=
-python get_comments_of_video_id.py --video_url https://www.youtube.com/watch?v=wW1lY5jFNcQ --apikey youtube_api_key.txt
+pip install -r requirements.txt
 ```
 
-The Youtube comments will be stored in a `.csv` file, `{video_id}_csv.csv` which can be read in Python using `df = pd.read_csv('{video_id}_final.csv', header=None)`
 
+Next, run the Python script as follows to get the comments from the first presidential debate (storing the data in `wW1lY5jFNcQ_csv_final.csv`):
 
+```bash
+python get_comments_of_video_id.py --video_url https://www.youtube.com/watch?v=wW1lY5jFNcQ
+```
+
+To get the comments for the second presidential debate:
+
+```bash
+python get_comments_of_video_id.py --video_url https://www.youtube.com/watch?v=bPiofmZGb8o
+```
+
+The data is stored in`bPiofmZGb8o_csv_final.csv`
+(the Youtube comments files take the format `{video_id}_csv.csv`). This file may be read using the Python/Pandas library using `df = pd.read_csv('{video_id}_final.csv', header=None)`
