@@ -2,6 +2,7 @@
 
 import numpy as np
 import pandas as pd
+import emoji
 
 from sentence_transformers import SentenceTransformer
 from sklearn.cluster import KMeans
