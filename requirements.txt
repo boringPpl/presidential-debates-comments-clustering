@@ -1,2 +1,6 @@
+emoji
 google-api-python-client
+hdbscan
 pandas
+sentence-transformers
+transformers==2.11.0
