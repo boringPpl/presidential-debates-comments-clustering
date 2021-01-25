@@ -16,8 +16,9 @@ def load_comments(video_id):
 
 if __name__ == '__main__':
     print('Loading comments...')
-    df1 = load_comments('bPiofmZGb8o')['Comments']
+    df1 = load_comments('bPiofmZGb8o')
     print(df1.head())
+    comments1 = df1['Comments']
 
     print('Loading bert-base-nli-mean-tokens')
     embedder = SentenceTransformer('bert-base-nli-mean-tokens')
