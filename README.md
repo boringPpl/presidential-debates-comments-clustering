@@ -38,7 +38,7 @@ Here are some of the major considerations when planning out the pieces:
 3. **Encoding the sentences**: Running text analysis requires us to change the text into a vector that the algorithms can work with. You can think of vectors as an array of numbers. A combination of these numbers give an indication of the meanings for the words or paragraphs. There are a few popular libraries to change sentences to embeddings. We explored [Universal sentence encoder](https://tfhub.dev/google/universal-sentence-encoder/4) and [SentenceBert](https://arxiv.org/abs/1908.10084). I will go into more details in the later sections, but you can also find plenty of articles explaining each of them in detail online. We randomly selected 30 comments and created a similarity matrix to compare both libraries. We found Universal Sentence encoder to be the most accurate in terms of representing central core ideas in terms of comments. 
     - We randomly selected 30 comments and created a similarity matrix to compare both libraries. We found Universal Sentence encoder to be the most accurate in terms of representing central core ideas in terms of comments.
 
-4. **Exploration of different clustering methods**: After all the comments are converted into vectors, we can now run a standard clustering on these vectors. As the name suggest, clustering algorithms clumps similar vectors together. But it can be difficult to find similarities when the dimensions (dimensions just means number of items in an array) are really high. To help reduce that, we want to tranform the high dimension space to a lower dimension space that matters. [Pincipal Component Analysis](https://en.wikipedia.org/wiki/Principal_component_analysis) helps us do that by meshing all the dimensions down to a stated number. 
+4. **Exploration of different clustering methods**: After all the comments are converted into vectors, we can now run a standard clustering on these vectors. As the name suggest, clustering algorithms clumps similar vectors together. But it can be difficult to find similarities when the dimensions (dimensions just means number of items in an array) are really high. To help reduce that, we want to tranform the high dimension space to a lower dimension space that matters. [Principal Component Analysis](https://en.wikipedia.org/wiki/Principal_component_analysis) helps us do that by meshing all the dimensions down to a stated number. 
     - UMap
     - T-SNE
 
@@ -96,7 +96,7 @@ There was also the issue of running into an "out of memory error" due to the len
 
 The usual cleaning of text was then done, namely standardising the text to lowercase, and the removal of special characters.
 
-### Embedding
+### Word Embedding
 After cleaning the data, we have to convert the text into word embeddings for the clustering model. We experimented with Bert<sup>[4](https://huggingface.co/sentence-transformers/bert-base-nli-mean-tokens)</sup> embeddings and Universal Sentence Encoder<sup>[5](https://tfhub.dev/google/universal-sentence-encoder/4)</sup>.
 
 BERT, short for Bidirectional Encoder Representations from Transformers, uses a masked language model(MLM) that randomly masks some tokens of the input such that the aim is to predict accurately the masked word using the other unmasked tokens in the sentence. 
@@ -116,29 +116,46 @@ For the following sections, we used the embedding produced by the Unversal Sente
 
 ### Clustering of intents
 
-We've applied 3 clustering techniques: UMAP and T-SNE on our cleaned dataset.
+We've applied 3 clustering techniques: PCA, UMAP and T-SNE on our cleaned dataset.
 
-### Preprocessing 
-PCA(https://en.wikipedia.org/wiki/Principal_component_analysis) stands for Principal Component Analysis which serves as a popular technique to visualise higher dimension data, while preserving as much variance as possible. It is an unsupervised learning technique to form clusters by solving the  eigenvalue/eigenvector problem on the variables.
+#### PCA 
+PCA<sup>[5](https://en.wikipedia.org/wiki/Principal_component_analysis)</sup> stands for Principal Component Analysis which serves as a popular technique to visualise higher dimension data, while preserving as much variance as possible. It is an unsupervised learning technique to form clusters by solving the  eigenvalue/eigenvector problem on the variables.
 
-There are as many principal components as data variables. The principal component is a line that maximises the average squared distances from the projected points represented by the white dots.
+There are as many principal components as data variables. The principal component is a line (green line represented below) that maximises the average squared distances from the projected points represented by the white dots.
 
 ![PCA graph from https://liorpachter.wordpress.com/2014/05/26/what-is-principal-component-analysis/](https://i.imgur.com/1XGopx5.png)
 
+#### UMAP
+Uniform Manifold Approximation and Projection (UMAP)<sup>[6](https://en.wikipedia.org/wiki/Nonlinear_dimensionality_reduction#Uniform_manifold_approximation_and_projection)</sup> uses a framework based in Riemannian geometry and algebraic topology. It uses a manifold learning technique for dimensionality reduction. UMAP scales well and is able to run efficiently on large datasets.
 
-Uniform Manifold Approximation and Projection (UMAP)(https://en.wikipedia.org/wiki/Nonlinear_dimensionality_reduction#Uniform_manifold_approximation_and_projection) uses a framework based in Riemannian geometry and algebraic topology. It uses a manifold learning technique for dimensionality reduction. UMAP scales well and is able to run efficiently on large datasets.
+#### T-SNE
+T-SNE<sup>[7](https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding)</sup>, short for t-distributed Stochastic Neighbor Embedding, measures the similiarities between data pairs in both the high dimension space and low dimension space. T-SNE works very similarly to UMAP, but UMAP is better at preserving global structure in the final projection<sup>[8](https://pair-code.github.io/understanding-umap/#:~:text=UMAP%2C%20at%20its%20core%2C%20works,as%20structurally%20similar%20as%20possible)</sup>. T-SNE preserves small pairwise distances unlike PCA, which may result in a more accurate representation of the clusters.
 
-(insert graph of cluster)
+Below is an example of the clustering between UMAP and T-SNE, and how UMAP is better than T-SNE in preserving global structure. While each category in both UMAP and T-SNE is clearly clustered accordingly indicated by the individual colours, similar categories are grouped closer together in UMAP than in T-SNE, thereby preserving the global structure for UMAP.
 
-T-SNE(https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding), short for t-distributed Stochastic Neighbor Embedding, measures the similiarities between data pairs in both the high dimension space and low dimension space. T-SNE works very similarly to UMAP, but UMAP is better at preserving global structure in the final projection.https://pair-code.github.io/understanding-umap/#:~:text=UMAP%2C%20at%20its%20core%2C%20works,as%20structurally%20similar%20as%20possible. T-SNE preserves small pairwise distances unlike PCA, which may result in a more accurate representation of the clusters.
+![](https://i.imgur.com/am5MvOd.png)
+<sup>[Image link reference](https://pair-code.github.io/understanding-umap/)</sup>
 
-(insert graph of cluster)
+Comparison between the 3 clustering algorithms on the MNIST dataset:
+![](https://i.imgur.com/S48rcgj.jpg)
+<sup>[Image link reference](https://uschilaa.github.io/physicsViz/#13)</sup>
+
+
 
 ### Results and Conclusion
 
-(insert results here)
+We will now compare the results of each of the clustering algorithms run on our dataset.
 
-From this clustering analysis done on the Preseidential Debate, we can see the effectiveness of having clustering to group similar ideas together. There are plenty of use-cases for these and as such, can be generalised to other problems and data sets as well. Further steps to explore the clustering method would be to have different levels of abstraction.
+(insert results here: PCA, UMAP, T-SNE)
+
+Results for PCA:
+
+Results for UMAP:
+
+Results for T-SNE:
+
+
+From this clustering analysis done on the Presidential Debate, we can see the effectiveness of implementing clustering to group similar ideas together. There are plenty of use-cases for these and as such, can be generalised to other problems and data sets as well. An example of further steps to explore the clustering method would be to have different levels of abstraction.
  
 Example of the different levels of abstraction: <br>
 An example using the Youtube video: Coronavirus Ramps Up in the U.S. and Claims Herman Cain | The Daily Social Distancing Show [(Youtube link)](https://www.youtube.com/watch?v=yIwuzldM7HQ)<br>
@@ -147,33 +164,20 @@ Comments:
 - Covid-19: "I attack everyone, especially African Americans, elderly people, and people who don't wear a mask or social distance in public spaces."
 - Herman Cain (74 year old African American, with no mask on, in a Trump rally): "Masks will not be mandatory.... People are fed up."
 
-**[José Gomes](https://www.youtube.com/channel/UCOzhu7x9YPjoijyzO0WV8wA)** [1 day ago](https://www.youtube.com/watch?v=yIwuzldM7HQ&lc=UgxIPbruQ-UeJx-bUCB4AaABAg)
-
-Herman Cain: Coronavirus doesn’t exist
-Coronavirus: Herman Cain doesn’t exist
-
-Hermain Cain to himself after he tested positive:
-                    “awwww shucky ducky...”
-
-Herman Cain: There is no pandemic.
-Pandemic: There is no Herman Cain.
-
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/926655e0-4f75-4db4-9847-bd9e7d86b6e6/Screenshot_2020-08-02_at_9.12.37_PM.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/926655e0-4f75-4db4-9847-bd9e7d86b6e6/Screenshot_2020-08-02_at_9.12.37_PM.png)
 
 Abstracted overview:
 
-Level 1: 
 
 - Hermain Cain is a African American who does not believe in covid and died from it
 - Hermain Cain has cancer
 - Donald Trump does not believe in covid
 
-Level 2: 
-
-- 
+In conclusion, there are various use-cases for the usage of clustering techniques and it's usefulness on real world data.
 
 
-#### Sources and attribution: 
+
+
+#### Sources and References: 
 
 <div>Icons made by <a href="https://www.flaticon.com/authors/flat-icons" title="Flat Icons">Flat Icons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 
