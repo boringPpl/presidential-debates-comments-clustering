@@ -169,6 +169,11 @@ def main():
 
     args.csv_filename += "_final"
     save_to_csv(output_dict, video_id, args.csv_filename)
+    df = pd.DataFrame(output_dict)
+
+    # Save in feather format
+    filename_, ext_ = os.path.splitext(args.csv_filename)
+    df.to_feather(f"{filename_}.feather")
 
 
 if __name__ == '__main__':
