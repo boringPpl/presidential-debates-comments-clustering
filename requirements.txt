@@ -2,5 +2,6 @@ emoji
 google-api-python-client
 hdbscan
 pandas
+pyarrow
 sentence-transformers
 transformers==3.1.0
