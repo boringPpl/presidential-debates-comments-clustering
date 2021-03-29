@@ -1,9 +1,9 @@
 # [Presidential Debate Youtube Comments Clustering](https://boringppl.github.io/presidential_debates_comments_clustering/)
 
 ### Introduction
-At the point when we started this project, election week is coming up. There was so much excitement in the air on who is the next US president to be elected. There were thousands of articles on who's leading the polls. The US election has been trending on most, if not all, social media platforms. Being Data Scientists, we wondered if it would be possible to leverage on these different data sources to understand various topics of discussion surrounding each candidate. Of which, we have decided to focus on Youtube comments as a starting point for this project. 
+At the point when we started this project, election week was coming up. There was so much anticipation in the air on who would be the next US president to be elected. There were thousands of articles on who's leading the polls. The US election has been trending on most, if not all, social media platforms. As Data Scientists, we wondered if it would be possible to leverage on these different data sources to understand various topics of discussion surrounding each candidate. Of which, we have decided to focus on Youtube comments as a starting point for this project. 
 
-We were aware of the possibility of biased sampling as the demographic report of users on Youtube indicates the highest level of usage from users in the 18-34 age range<sup>[1](https://www.businessofapps.com/data/youtube-statistics/)</sup>, which also correlated to the most technogically savvy group of people. With that being said, there is still a significant number of people using Youtube from other age groups, and with Youtube being the number one site for web traffic worldwide (8.6 billion monthly visits)<sup>[2](https://www.businessofapps.com/data/youtube-statistics/)</sup>. It would be significant to conduct an analysis on the different core ideas of the Youtube comments section, specifically on the US election.
+We were aware of the possibility of biased sampling as the demographic report of users on Youtube indicates the highest level of usage from users in the 18-34 age range<sup>[1](https://www.businessofapps.com/data/youtube-statistics/)</sup>, which also correlated to the most technologically savvy group of people. With that being said, there is still a significant number of people using Youtube from other age groups, and with Youtube being the number one site for web traffic worldwide (8.6 billion monthly visits)<sup>[2](https://www.businessofapps.com/data/youtube-statistics/)</sup>. It would be significant to conduct an analysis on the different core ideas of the Youtube comments section, specifically on the US election.
 
 While this exploration covers the US election, the essential parts of the analysis are relevant to many other use-cases. Youtube influencers and content creators can receive hundreds of thousands of comments per video and it is often difficult to get an overview of all the core ideas, and it would not be easy to sift through every comment received in each video. Having an overview or a summary of the different perspectives of the viewers would be useful for them to either create another response video to address their concerns or to reply to each of these "clusters" of ideas. This analysis can also be extended to customer service chats or surveys from large number of users. 
 
@@ -14,12 +14,12 @@ We have picked two Youtube videos to focus on.
 
 ![](https://i.imgur.com/8L4hQmw.png)
 
-First 2020 Presidential Debate between Donald Trump and Joe Biden uploaded on Youtube
+First 2020 Presidential Debate between Donald Trump and Joe Biden uploaded on Youtube:
 https://www.youtube.com/watch?v=wW1lY5jFNcQ
 
 
 
-Second presidential debate uploaded on Youtube
+Second presidential debate uploaded on Youtube:
 https://www.youtube.com/watch?v=bPiofmZGb8o
 
 
@@ -33,12 +33,12 @@ For the purpose of this article, we would be focusing on creating a summary of t
 ​
 
 Here are some of the major considerations when planning out the pieces:
-1. **Pulling data from Youtube API**: We had either the option to scrape the site using beautifulSoup (with some potential legal concerns) or to make use of the Youtube API to extract the data. In this case, we felt that the latter approach would be more robust, and our procedure is [described in detail here](https://boringppl.github.io/presidential_debates_comments_clustering/YOUTUBE_API).
+1. **Pulling data from Youtube API**: We had the option to either scrape the site using beautifulSoup (with some potential legal concerns) or to make use of the Youtube API to extract the data. In this case, we felt that the latter would be more robust, and our procedure is [described in detail here](https://boringppl.github.io/presidential_debates_comments_clustering/YOUTUBE_API).
 2. **Exploratory data analysis and data cleaning**: The first step to any ML project is always to print out the data to get a sense of the edge cases. We will expect the user generated comments to be rather messy. We will need to deal with emojis and repeated words. 
 3. **Encoding the sentences**: Running text analysis requires us to change the text into a vector that the algorithms can work with. You can think of vectors as an array of numbers. A combination of these numbers give an indication of the meanings for the words or paragraphs. There are a few popular libraries to change sentences to embeddings. We explored [Universal sentence encoder](https://tfhub.dev/google/universal-sentence-encoder/4) and [SentenceBert](https://arxiv.org/abs/1908.10084). I will go into more details in the later sections, but you can also find plenty of articles explaining each of them in detail online. We randomly selected 30 comments and created a similarity matrix to compare both libraries. We found Universal Sentence encoder to be the most accurate in terms of representing central core ideas in terms of comments. 
     - We randomly selected 30 comments and created a similarity matrix to compare both libraries. We found Universal Sentence encoder to be the most accurate in terms of representing central core ideas in terms of comments.
 
-4. **Exploration of different clustering methods**: After all the comments are converted into vectors, we can now run a standard clustering on these vectors. As the name suggest, clustering algorithms clumps similar vectors together. But it can be difficult to find similarities when the dimensions (dimensions just means number of items in an array) are really high. To help reduce that, we want to tranform the high dimension space to a lower dimension space that matters. [Principal Component Analysis](https://en.wikipedia.org/wiki/Principal_component_analysis) helps us do that by meshing all the dimensions down to a stated number. 
+4. **Exploration of different clustering methods**: After all the comments are converted into vectors, we ran a standard clustering on these vectors. As the name suggests, clustering algorithms clump similar vectors together, but it can be difficult to find similarities when the dimensions (number of items in an array) are too large. To mitigate this, we want to tranform our data from a higher dimensional space to a lower dimensional space that provides more value in our analysis. [Principal Component Analysis](https://en.wikipedia.org/wiki/Principal_component_analysis) helps us do that by meshing all the dimensions down to a stated number. 
     - UMap
     - T-SNE
 
@@ -92,9 +92,7 @@ becomes
 
 when the demojize function from the emoji library is applied on the sentence.
 
-There was also the issue of running into an "out of memory error" due to the length of the sentences. We found that it crashes at around 2300+ characters. Hence we truncated the comments to a maximum of about 2200 characters to overcome this problem.
-
-The usual cleaning of text was then done, namely standardising the text to lowercase, and the removal of special characters.
+The usual cleaning of text was done, namely standardising the text to lowercase, and the removal of special characters.
 
 ### Word Embedding
 After cleaning the data, we have to convert the text into word embeddings for the clustering model. We experimented with Bert<sup>[4](https://huggingface.co/sentence-transformers/bert-base-nli-mean-tokens)</sup> embeddings and Universal Sentence Encoder<sup>[5](https://tfhub.dev/google/universal-sentence-encoder/4)</sup>.
@@ -111,8 +109,63 @@ The model is trained and optimized for greater-than-word length text, such as se
 ![](https://i.imgur.com/NdQXjiD.png)
 
 Usage of both embeddings can be found in the github notebook: comments_clustering.ipynb.
-For the following sections, we used the embedding produced by the Unversal Sentence Encoder because of its efficiency, since we face a memory limitation.
+For the following sections, we used the embedding produced by the Unversal Sentence Encoder because of its efficiency. 
 
+Here is the list of sentenses that are passed into both sentense-bert and Universal sentence encoder: 
+- 25:28\nTrump: Did you hear anything?\nBiden: No what was that sound.
+- 53:39 trump the idiot.\nYour the big man! I dont know if you are.. BUT YOUR THE BIG MAN.. which is it trump.. Grammer helps..
+- Trump is the President of the USA !  no biden...
+- Driving home from school today because that Wednesday I’m going to schools for the day so I’m not going out of the house to get wills house
+- Trump won election the swamp rats in Washington did everything they could to cheat in order to have Biden win. Congrats you now have the power and this country and all we can do is sit around and watch you waste our money change the constitution do whatever they want and clearly I don't see our country strong and proud. This election was a disgrace 75 million people voted for president Trump and the few swing states should be ashamed of themselves for being pushed around to be bullied into being dishonest. No one on Trump side believes for one second that sleepy Joe won.  He is not my president.  I am sad, angry frustrated and upset so pelosi and shumner shame on you.  You have not done 1 thing for the American people. You are the reason we all want term limits because you don't deserve to be in government.   Do us all a favor. Retire
+- Biden looks too old
+- how many memes?
+- I feel like disliking comments cause ain't nobody disliking sht\nNot personal just cause its empty \nIts ungodly to leave open space
+- I feel like disliking comments cause ain't nobody disliking sht\nNot personal just cause its empty \nIts ungodly to leave open space
+- Men and Women are entertained by this debate. What about 3rd genders?
+- I like
+- The lackadaisical dash histologically boast because select theoretically clean to a hoc health. sedate, late room
+- Cmon man.
+- Is he still under audit?
+- “The show will start very soon”\nShe had no idea what kind of show she was talking about.
+- Chad Trump vs Demented Biden
+- TRAMP JE DRUGI KENEDI POBEDICE ISTINA
+- Biden by a landslide. He stomped Trump!
+- Trump is right about the corona virus we cannot shut down everything I've been tested positive for corona virus and it went away next time I tested so it does indeed go away
+- To be honest, I am amazed they allowed comments on this video
+Name: Comments, dtype: object
+
+We ran a confusion metrix to visualise the similarity of the vectors for 20 comments: 
+
+![](https://i.imgur.com/FtOXTda.png)
+Confusion metrix for Universal Sentence encoder
+![](https://i.imgur.com/euVe4ab.png)
+Confusion metrix for Sentence Bert
+
+Universal Sentence Encoder found these sentences similar
+
+sentence 3 and 5
+- Trump is the President of the USA !  no biden...
+- Trump won election the swamp rats in Washington did everything they could to cheat in order to have Biden win. Congrats you now have the power and this country and all we can do is sit around and watch you waste our money change the constitution do whatever they want and clearly I don't see our country strong and proud. This election was a disgrace 75 million people voted for president Trump and the few swing states should be ashamed of themselves for being pushed around to be bullied into being dishonest. No one on Trump side believes for one second that sleepy Joe won.  He is not my president.  I am sad, angry frustrated and upset so pelosi and shumner shame on you.  You have not done 1 thing for the American people. You are the reason we all want term limits because you don't deserve to be in government.   Do us all a favor. Retire
+
+sentence 3 and 6
+- Trump is the President of the USA !  no biden...
+- Biden looks too old
+
+sentence 3 and 16
+- Trump is the President of the USA !  no biden...
+- Chad Trump vs Demented Biden
+
+sentence 3 and 18
+- Trump is the President of the USA !  no biden...
+- Biden by a landslide. He stomped Trump!
+
+sentence 16 and 18
+- Chad Trump vs Demented Biden
+- Biden by a landslide. He stomped Trump!
+
+It is interesting to observe that universal sentence encoder did significant better than sentense bert. It could pick out most of the sentences correctly. It seems like it got sentence 18 pretty wrong. It is possible that Biden by a landslide is not commonly used to denote positive context. 
+
+PS: In the final code, we faced a memory limitation using universal sentence encoder. We ran out of memory trying to run the whole array. To bypass this, we embedded our data in batches of 500. 
 
 ### Clustering of intents
 
@@ -171,6 +224,8 @@ Abstracted overview:
 - Hermain Cain is a African American who does not believe in covid and died from it
 - Hermain Cain has cancer
 - Donald Trump does not believe in covid
+
+We have also identified some limitations that can be worked on to improve the accuracy of this analysis. Firstly, we have assumed that users do not make any spelling mistakes or type in other languages other than english. Online chats realistically contain words in short-forms (eg. brb) and the use of numbers to replace words (eg. up 2 you). These words may not be converted into word embeddings that properly encapsulate the context of the sentence. Secondly, given the computational limitations that we've faced, we could have had a larger and more comprehensive data set to indicate our findings.
 
 In conclusion, there are various use-cases for the usage of clustering techniques and it's usefulness on real world data.
 
