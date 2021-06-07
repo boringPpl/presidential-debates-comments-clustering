@@ -112,7 +112,7 @@ Usage of both embeddings can be found in the github notebook: comments_clusterin
 For the following sections, we used the embedding produced by the Unversal Sentence Encoder because of its efficiency. 
 
 Here is the list of sentenses that are passed into both sentense-bert and Universal sentence encoder: 
-- 25:28\nTrump: Did you hear anything?\nBiden: No what was that sound.
+- 25:28 Trump: Did you hear anything?\nBiden: No what was that sound.
 - 53:39 trump the idiot.\nYour the big man! I dont know if you are.. BUT YOUR THE BIG MAN.. which is it trump.. Grammer helps..
 - Trump is the President of the USA !  no biden...
 - Driving home from school today because that Wednesday I’m going to schools for the day so I’m not going out of the house to get wills house
@@ -132,7 +132,6 @@ Here is the list of sentenses that are passed into both sentense-bert and Univer
 - Biden by a landslide. He stomped Trump!
 - Trump is right about the corona virus we cannot shut down everything I've been tested positive for corona virus and it went away next time I tested so it does indeed go away
 - To be honest, I am amazed they allowed comments on this video
-Name: Comments, dtype: object
 
 We ran a confusion metrix to visualise the similarity of the vectors for 20 comments: 
 
@@ -225,7 +224,7 @@ Abstracted overview:
 - Hermain Cain has cancer
 - Donald Trump does not believe in covid
 
-We have also identified some limitations that can be worked on to improve the accuracy of this analysis. Firstly, we have assumed that users do not make any spelling mistakes or type in other languages other than english. Online chats realistically contain words in short-forms (eg. brb) and the use of numbers to replace words (eg. up 2 you). These words may not be converted into word embeddings that properly encapsulate the context of the sentence. Secondly, given the computational limitations that we've faced, we could have had a larger and more comprehensive data set to indicate our findings.
+We have also identified some limitations that can be worked on to improve the accuracy of this analysis. Firstly, we have assumed that users do not make any spelling mistakes or type in other languages other than english. In addition, online chats realistically contain words in short-forms (eg. brb) and the use of numbers to replace words (eg. up 2 you). These words may not be converted into word embeddings that properly encapsulate the context of the sentence. Secondly, given the computational limitations that we've faced, we could have had a larger and more comprehensive data set to indicate our findings.
 
 In conclusion, there are various use-cases for the usage of clustering techniques and it's usefulness on real world data.
 
