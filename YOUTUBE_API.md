@@ -45,7 +45,7 @@ pip install -r requirements.txt
 ```
 
 
-Next, run the Python script as follows to get the comments from the first presidential debate (storing the data in `wW1lY5jFNcQ_csv_final.csv`):
+Next, run the Python script as follows to get the comments from the first presidential debate (storing the data in `data/wW1lY5jFNcQ_csv_final.csv`):
 
 ```bash
 python get_comments_of_video_id.py --video_url https://www.youtube.com/watch?v=wW1lY5jFNcQ
@@ -57,5 +57,7 @@ To get the comments for the second presidential debate:
 python get_comments_of_video_id.py --video_url https://www.youtube.com/watch?v=bPiofmZGb8o
 ```
 
-The data is stored in`bPiofmZGb8o_csv_final.csv`
-(the Youtube comments files take the format `{video_id}_csv.csv`). This file may be read using the Python/Pandas library using `df = pd.read_csv('{video_id}_final.csv', header=None)`
+The data is stored in`data/bPiofmZGb8o_csv_final.csv`
+(the Youtube comments files take the format `{video_id}_csv.csv`). This file may be read using the Python/Pandas library using `df = pd.read_csv('{video_id}_final.csv', header=None)`.
+
+**Note**: Later, it was found that multi-line comments made it difficult to read in the csv files. To solve this issue, the data was saved in the `.feather` format instead.
