@@ -23,7 +23,6 @@ Second presidential debate uploaded on Youtube:
 https://www.youtube.com/watch?v=bPiofmZGb8o
 
 
-
 For the purpose of this article, we would be focusing on creating a summary of the Youtube comments  found in the Presidential Debate between Donald Trump and Joe Biden as shown in the screenshots above.
 
 ### Overall Architecture Plan (TLDR of the whole flow) 
