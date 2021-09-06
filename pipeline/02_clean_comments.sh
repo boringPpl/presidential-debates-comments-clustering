@@ -41,7 +41,7 @@ def clean_comments(df):
     df['comments_cleaned'] = df['comments_cleaned'].str.lower()
 
     # 4. Remove special characters
-    df['comments_cleaned'] = df['comments_cleaned'].str.replace('[^a-zA-Z0-9]', ' ')
+    df['comments_cleaned'] = df['comments_cleaned'].str.replace('[^a-zA-Z0-9]', ' ', regex=True)
 
     # 5. Replace repeated white space with a single space
     df['comments_cleaned'] = df['comments_cleaned'].str.replace('\s+', ' ', regex=True)
@@ -80,6 +80,8 @@ if __name__ == "__main__":
     show_df_info(df)
 EOF
 
-python3 clean_comments.py bPiofmZGb8o
-python3 clean_comments.py wW1lY5jFNcQ
+for video_id in bPiofmZGb8o wW1lY5jFNcQ; do
+    echo "----- Video ID: ${video_id} -----"
+    python3 clean_comments.py wW1lY5jFNcQ
+done
 rm clean_comments.py
