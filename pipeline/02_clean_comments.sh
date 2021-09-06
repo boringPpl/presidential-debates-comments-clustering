@@ -56,7 +56,7 @@ def clean_comments(df):
 
 def show_df_info(df):
     print(f'The shape of the dataframe is: {df.shape}')
-    print(f"The time range for the data is: {df['Updated At'].min():%Y-%m-%d %H%Mh} to {df1['Updated At'].max():%Y-%m-%d %H%Mh}")
+    print(f"The time range for the data is: {df['Updated At'].min():%Y-%m-%d %H%Mh} to {df['Updated At'].max():%Y-%m-%d %H%Mh}")
     print()
     print(df['comments_cleaned'].apply(len).sort_values(ascending=False).head(20))
 
